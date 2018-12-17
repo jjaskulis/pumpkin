@@ -1,7 +1,7 @@
 import React from 'react'
 import './Main.css'
-import Navigation from '../Navigation/Navigation'
-import Movies from '../Movies/Movies'
+import Navigation from './Navigation/Navigation'
+import Movies from './Movies/Movies'
 
 class Main extends React.Component{
     render(){
