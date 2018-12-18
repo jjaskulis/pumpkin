@@ -1,17 +1,16 @@
-// Navigation.js
-
 import React from "react";
-import "./Navigation.css";
-import Selection from "./Selection";
+import "./Selection.css";
 
-class Navigation extends React.Component {
-  render() {
-    return (
-      <section className="navigation">
-        <Selection />
-      </section>
-    )
+const Selection = ({ genre, genres, onGenreChange }) => (
+<div className="selection">
+  <label>Genre</label>
+  <select value={genre} onChange={onGenreChange}>
+    {genres.map(genre => (
+       <option key={genre.id} value={genre.name}>{genre.name}</option>
+    ))
   }
-}
+  </select>
+</div>
+)
 
-export default Navigation;
+export default Selection;
