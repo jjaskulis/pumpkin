@@ -5,6 +5,7 @@ import './Main.css'
 
 class Main extends React.Component{
     state = {
+        page:1,
         url: `https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US`,
         moviesUrl: `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1`,
         genre: "Comedy",
@@ -53,7 +54,7 @@ class Main extends React.Component{
       };
 
       generateUrl = () => {
-        const {genres, year, rating, runtime } = this.state;
+        const {genres, year, rating, runtime,page } = this.state;
         const selectedGenre = genres.find( genre => genre.name === this.state.genre);
         const genreId = selectedGenre.id;
     
@@ -67,7 +68,7 @@ class Main extends React.Component{
           `vote_average.lte=${rating.value.max}&` +
           `with_runtime.gte=${runtime.value.min}&` +
           `with_runtime.lte=${runtime.value.max}&` +
-          `page=1&`;
+          `page=${page}&`;
         this.setState({ moviesUrl });
       }
     
