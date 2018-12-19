@@ -15,9 +15,9 @@ class Main extends React.Component{
         year: {
           label: "year",
           min: 1990,
-          max: 2017,
+          max: 2018,
           step: 1,
-          value: { min: 2000, max: 2017 }
+          value: { min: 2000, max: 2018 }
         },
         rating: {
           label: "rating",
@@ -36,17 +36,30 @@ class Main extends React.Component{
       };
     //lifecycle
     componentDidMount() {
-      this.fetchMovies(this.state.moviesUrl);
+      const savedState = this.getStateFromLocalStore();
+      if(!savedState || (savedState && !savedState.movies.length)){
+        this.fetchMovies(this.state.moviesUrl);
+      }else{
+        this.setState({...savedState});
+        this.generateUrl(savedState);
+      }
     }
     componentWillUpdate(nextProps, nextState) {
+      this.saveStateToLocalStorage();
       if (this.state.moviesUrl !== nextState.moviesUrl) {
         this.fetchMovies(nextState.moviesUrl);
       }
       if(this.state.page !== nextState.page){
-        this.generateUrl();
+        this.generateUrl(nextState);
       }
     }
     //
+    saveStateToLocalStorage = () =>{
+      localStorage.setItem('sweetpumpkins.params',JSON.stringify(this.state))
+    }
+    getStateFromLocalStore = () =>{
+      return JSON.parse(localStorage.getItem('sweetpumpkins.params'))
+    }
       onPageIncrease = () =>{
         const {page, total_pages} = this.state;
         const nextPage = page + 1;
@@ -77,8 +90,9 @@ class Main extends React.Component{
       }
     //
       onSearchButtonClick = () => {
-        this.generateUrl();
         this.setState({page : 1});
+        this.generateUrl(this.state);
+
       }
       setGenres = genres => {
         this.setState({genres});
@@ -97,9 +111,9 @@ class Main extends React.Component{
         });
       };
 
-      generateUrl = () => {
-        const {genres, year, rating, runtime,page } = this.state;
-        const selectedGenre = genres.find( genre => genre.name === this.state.genre);
+      generateUrl = params => {
+        const {genres, year, rating, runtime,page } = params;
+        const selectedGenre = genres.find( genre => genre.name === params.genre);
         const genreId = selectedGenre.id;
     
         const moviesUrl = `https://api.themoviedb.org/3/discover/movie?` +
